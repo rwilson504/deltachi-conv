@@ -7,14 +7,16 @@ Brother fills Google Form
         ↓
 Submission → private Sheet "Form Responses 1"
         ↓
-You copy/move the row into the "Attendees" or "Rooms" tab
+🤖 Apps Script auto-copies into "Attendees" tab (Approved blank, highlighted amber)
         ↓
-You set the row's Approved column to Y
+You type Y or N in the Approved cell
         ↓
 Apps Script trigger pushes data/roster.json to GitHub
         ↓
 GitHub Pages rebuilds → site updates in ~30 sec
 ```
+
+**Your job day-to-day = type one letter per submission.** That's it.
 
 ---
 
@@ -45,8 +47,9 @@ GitHub Pages rebuilds → site updates in ~30 sec
    - Rename one to **`Rooms`**
 4. Set up the `Attendees` tab with these column headers in row 1 (left to right):
    ```
-   Name | Chapter | Arrival | Departure | Needs Roommate | Notes | Approved
+   Name | Chapter | Email | Phone | Arrival | Departure | Needs Roommate | Notes | Approved
    ```
+   *(Email and Phone are private — they're collected here for your reference but **never** published to the site.)*
 5. Set up the `Rooms` tab with these headers:
    ```
    Room | Occupants | Booked | Notes | Approved
@@ -92,9 +95,9 @@ GitHub Pages rebuilds → site updates in ~30 sec
 
 ✅ **You're done.** Test it by:
 - Filling out your own form once.
-- Copy the submitted row from "Form Responses 1" into the `Attendees` tab.
-- Set the Approved column to `Y`.
-- Within ~30 sec the site should show your name in the Roster section.
+- Watch a new row appear in the **Attendees** tab automatically (with an amber Approved cell).
+- Type `Y` in that Approved cell.
+- Within ~30 sec the site shows your name in the Roster section.
 
 ---
 
@@ -102,21 +105,23 @@ GitHub Pages rebuilds → site updates in ~30 sec
 
 When you get an email about a new submission:
 
-1. Open the Sheet → **Form Responses 1** tab → look at the new row.
-2. **If you want to publish:** copy the relevant fields (Name, Chapter, Arrival, etc.) to a new row in the **Attendees** tab. Set the **Approved** cell to `Y`.
-3. **If you want to deny:** do nothing, or move the row to a hidden "Denied" tab if you want a paper trail.
-4. The site auto-updates within 30 sec of the edit (Apps Script trigger fires).
+1. Open the Sheet → **Attendees** tab.
+2. The new submission is already there at the bottom — the **Approved** cell is highlighted amber.
+3. Type `Y` to publish it, or `N` (or anything else) to hide it.
+4. Site updates within ~30 sec.
 
-To **un-approve** someone later: change their Approved cell to `N` (or blank). They disappear from the site on next edit.
+That's the whole workflow. The amber highlight clears the moment you type — so the only amber cells in the sheet are submissions still awaiting your call.
 
-To **edit** a published entry: just change the cell in the Attendees tab. The edit trigger fires on any edit to the Approved column; for edits to other columns, run `manualPublish` from the Apps Script editor (or just toggle Approved off and back on).
+To **un-approve** someone later: change their Approved cell to `N`. They disappear from the site within 30 sec.
+
+To **edit** a published entry: just change the cell. The publisher only fires on Approved-column edits, so to push edits to other columns either toggle Approved off-and-on, or run `manualPublish` from the Apps Script editor.
 
 ---
 
 ## What's published vs what's private
 
 **NEVER published to the site, no matter what:**
-- Any column whose name contains: `email`, `phone`, `private`, `notes (private)`, `reviewer`
+- Any column whose name contains: `email`, `phone`, `private`, `reviewer`, `timestamp`
 - The Form Responses 1 tab in its entirety
 - Any row where Approved is not `Y` / `Yes` / `True` / `1` / `✓`
 
@@ -124,6 +129,14 @@ To **edit** a published entry: just change the cell in the Attendees tab. The ed
 - All other columns from the Attendees / Rooms tabs
 
 This is enforced server-side by the Apps Script — there's no way for someone to scrape private info from the public site, because the private fields are stripped out at the source before being pushed to GitHub.
+
+## Adding new form questions later
+
+If you add a new question to the Google Form, you also need to:
+1. Add a matching column to the **Attendees** tab (left of the Approved column).
+2. Add a row to the `FORM_TO_ATTENDEE_MAP` array near the top of `Code.gs` so the auto-copy knows where to put the answer. The `formContains` field is a case-insensitive substring of the form question text.
+
+If you skip step 2, new submissions will still be auto-copied but the new field will be blank.
 
 ---
 

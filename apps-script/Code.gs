@@ -4,47 +4,11 @@
  * Pushes APPROVED rows from this Google Sheet to:
  *   https://github.com/rwilson504/deltachi-conv/blob/main/data/roster.json
  *
- * Setup (one-time):
- * -----------------
- * 1. In this Sheet: Extensions → Apps Script.
- *    Paste this entire file in. Save.
+ * Architecture:
+ *   Form submission → onFormSubmit copies row into Attendees tab (Approved blank)
+ *   You set Approved = Y/N → onSheetEdit publishes to GitHub
  *
- * 2. Create a GitHub fine-grained Personal Access Token:
- *    https://github.com/settings/personal-access-tokens/new
- *    - Resource owner: rwilson504
- *    - Repository access: "Only select repositories" → choose `deltachi-conv`
- *    - Permissions → Repository → Contents: Read and write
- *    - Generate, copy the token (starts with github_pat_...)
- *
- * 3. In Apps Script: Project Settings (gear icon) → Script Properties → Add Property:
- *      key:   GITHUB_TOKEN
- *      value: github_pat_xxxxxxxx (paste the full token)
- *
- * 4. Back in the script editor: pick the function `setupTriggers` from the dropdown,
- *    click ▶ Run. First run will ask for permissions — approve.
- *    This creates an onEdit trigger that publishes whenever you change the Approved column.
- *
- * 5. Optionally, set the public submit form URL once:
- *    pick `setSubmitFormUrl` from dropdown, edit the URL inside the function, run once.
- *
- * Daily use:
- * ----------
- * - Form submissions land in the "Form Responses 1" sheet automatically.
- * - You add an "Approved" column to that sheet (or rename to "Attendees" — see below).
- * - Set a row's Approved cell to Y to publish it; set to N (or anything else) to hide.
- * - Site updates within ~30 sec of GitHub Pages rebuild.
- *
- * Sheet structure expected:
- * -------------------------
- * Tab 1: "Attendees"
- *   Required columns (in any order): Name, Chapter, Approved
- *   Optional columns (auto-rendered): Arrival, Departure, "Needs Roommate", Notes, etc.
- *   ANY column whose name contains "email" or "phone" is treated as PRIVATE
- *   and NEVER published. Safe to collect freely on the form.
- *
- * Tab 2: "Rooms"
- *   Required columns: Room, Occupants, Approved
- *   Optional: Booked, Notes
+ * Setup: see apps-script/SETUP.md
  */
 
 const REPO_OWNER = 'rwilson504';
@@ -52,11 +16,10 @@ const REPO_NAME  = 'deltachi-conv';
 const FILE_PATH  = 'data/roster.json';
 const BRANCH     = 'main';
 
-// Column names in the sheet that should NEVER make it into the public JSON.
+// Column names that should NEVER make it into the public JSON.
 // Match is case-insensitive substring.
-const PRIVATE_COLS = ['email', 'phone', 'private', 'notes (private)', 'reviewer'];
+const PRIVATE_COLS = ['email', 'phone', 'private', 'reviewer', 'timestamp'];
 
-// The single "approve" column that gates publishing
 const APPROVAL_COL = 'Approved';
 const APPROVED_VALUES = new Set(['Y', 'YES', 'TRUE', '1', '✓', 'X']);
 
@@ -64,18 +27,88 @@ const ATTENDEES_SHEET_NAME = 'Attendees';
 const ROOMS_SHEET_NAME = 'Rooms';
 
 // ============================================================================
+// FORM SUBMIT → auto-copy into Attendees tab
+// ============================================================================
+
+/**
+ * Maps a form question (left) to an Attendees-tab column (right).
+ * Match is case-insensitive substring on the form question text.
+ * Anything not listed is silently dropped from the auto-copy.
+ * Add/edit rows here if you change form questions.
+ */
+const FORM_TO_ATTENDEE_MAP = [
+  { formContains: 'name',       attendeeCol: 'Name' },
+  { formContains: 'chapter',    attendeeCol: 'Chapter' },
+  { formContains: 'email',      attendeeCol: 'Email' },        // private, never published
+  { formContains: 'phone',      attendeeCol: 'Phone' },        // private, never published
+  { formContains: 'arrival',    attendeeCol: 'Arrival' },
+  { formContains: 'departure',  attendeeCol: 'Departure' },
+  { formContains: 'roommate',   attendeeCol: 'Needs Roommate' },
+  { formContains: 'notes',      attendeeCol: 'Notes' },
+  { formContains: 'anything',   attendeeCol: 'Notes' },        // alt label for Notes
+];
+
+function onFormSubmit(e) {
+  const ss = SpreadsheetApp.getActive();
+  const attendees = ss.getSheetByName(ATTENDEES_SHEET_NAME);
+  if (!attendees) {
+    Logger.log('No Attendees sheet — creating one.');
+    return;
+  }
+  const headers = attendees.getRange(1, 1, 1, Math.max(attendees.getLastColumn(), 1)).getValues()[0]
+    .map(h => String(h).trim());
+
+  // e.namedValues = { 'Question text': ['answer'], ... }
+  const namedValues = (e && e.namedValues) || {};
+
+  // Build the new row by walking Attendees columns in order
+  const newRow = headers.map(col => {
+    if (col.toLowerCase() === APPROVAL_COL.toLowerCase()) return ''; // leave blank for review
+    // Find a form question that maps to this column
+    for (const mapping of FORM_TO_ATTENDEE_MAP) {
+      if (mapping.attendeeCol.toLowerCase() !== col.toLowerCase()) continue;
+      // Find a form question whose text contains the trigger phrase
+      const matchingQuestion = Object.keys(namedValues).find(q =>
+        q.toLowerCase().includes(mapping.formContains.toLowerCase())
+      );
+      if (matchingQuestion) {
+        const v = namedValues[matchingQuestion];
+        return Array.isArray(v) ? v.join(', ') : String(v || '');
+      }
+    }
+    return '';
+  });
+
+  attendees.appendRow(newRow);
+  // Highlight the new row's Approved cell so it's obvious what to do next
+  const approvedColIdx = headers.findIndex(h => h.toLowerCase() === APPROVAL_COL.toLowerCase());
+  if (approvedColIdx >= 0) {
+    const lastRow = attendees.getLastRow();
+    attendees.getRange(lastRow, approvedColIdx + 1).setBackground('#fef3c7'); // amber pending
+  }
+  Logger.log('Auto-copied form submission into Attendees row ' + attendees.getLastRow());
+}
+
+// ============================================================================
+// TRIGGERS
+// ============================================================================
 
 function setupTriggers() {
   // Wipe any existing triggers we created before
   ScriptApp.getProjectTriggers().forEach(t => {
-    if (t.getHandlerFunction() === 'onSheetEdit') ScriptApp.deleteTrigger(t);
+    const fn = t.getHandlerFunction();
+    if (fn === 'onSheetEdit' || fn === 'onFormSubmit') ScriptApp.deleteTrigger(t);
   });
   ScriptApp.newTrigger('onSheetEdit')
     .forSpreadsheet(SpreadsheetApp.getActive())
     .onEdit()
     .create();
-  Logger.log('Trigger installed. The site will auto-publish on edits to the Approved column.');
-  publishNow(); // do an initial publish so the site has data
+  ScriptApp.newTrigger('onFormSubmit')
+    .forSpreadsheet(SpreadsheetApp.getActive())
+    .onFormSubmit()
+    .create();
+  Logger.log('Triggers installed: onSheetEdit (publish on approval) + onFormSubmit (auto-copy submissions).');
+  publishNow();
 }
 
 function onSheetEdit(e) {
@@ -83,11 +116,12 @@ function onSheetEdit(e) {
   const sheet = e.range.getSheet();
   const sheetName = sheet.getName();
   if (sheetName !== ATTENDEES_SHEET_NAME && sheetName !== ROOMS_SHEET_NAME) return;
-  // Only react if the edit is in the Approved column
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
   const approvedCol = headers.findIndex(h => String(h).trim().toLowerCase() === APPROVAL_COL.toLowerCase()) + 1;
   if (approvedCol === 0) return;
   if (e.range.getColumn() !== approvedCol) return;
+  // Clear the amber highlight once decided
+  e.range.setBackground(null);
   publishNow();
 }
 
