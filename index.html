@@ -138,7 +138,7 @@
     <div class="max-w-6xl mx-auto px-4">
       <div class="mb-8">
         <h2 class="text-3xl font-bold">👥 Roster</h2>
-        <p class="text-stone-600 mt-1">Who's coming, who's bunking with who, and who still needs a roommate.</p>
+        <p class="text-stone-600 mt-1">Who's coming and who's still looking for a hotel partner.</p>
       </div>
 
       <!-- Roommate Finder Callout -->
@@ -148,36 +148,29 @@
         <div id="roommate-list" class="flex flex-wrap gap-2"></div>
       </div>
 
-      <!-- Tabs -->
-      <div class="flex gap-2 mb-4 border-b border-stone-200">
-        <button class="roster-tab active px-4 py-2 font-medium text-sm border-b-2 border-transparent" data-tab="attending">Attending (<span id="count-attending">—</span>)</button>
-        <button class="roster-tab px-4 py-2 font-medium text-sm border-b-2 border-transparent text-stone-500" data-tab="rooms">Hotel Rooms (<span id="count-rooms">—</span>)</button>
+      <!-- Submit CTA (always visible) -->
+      <div class="mb-6 flex flex-wrap items-center gap-3 bg-stone-50 border border-stone-200 rounded-lg p-4">
+        <div class="flex-1 min-w-[220px]">
+          <p class="font-semibold text-stone-900">Coming to the convention?</p>
+          <p class="text-sm text-stone-600">Submit your info — entries appear here once approved.</p>
+        </div>
+        <a id="submit-form-btn" href="#" target="_blank" rel="noopener" class="bg-dx-red text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition">📝 Submit your info</a>
+        <p id="submit-form-fallback" class="text-xs text-stone-500 hidden">(Form link not configured yet — ping Rick on the Delta Chi groupchat to add you manually.)</p>
+      </div>
+
+      <!-- Attending count -->
+      <div class="mb-3 text-sm text-stone-600">
+        <span class="font-semibold text-stone-900"><span id="count-attending">—</span></span> attending so far
       </div>
 
       <!-- Attending table -->
       <div id="tab-attending" class="roster-panel">
         <div id="attending-empty" class="hidden bg-stone-50 border border-dashed border-stone-300 rounded-lg p-8 text-center">
-          <p class="text-stone-500">No attendees loaded yet — the host needs to set up the Google Sheet (see README).</p>
+          <p class="text-stone-500">No attendees yet — be the first to <a href="#submit-form-btn" class="dx-red underline">submit</a>!</p>
         </div>
         <div id="attending-table" class="overflow-x-auto"></div>
       </div>
 
-      <!-- Rooms table -->
-      <div id="tab-rooms" class="roster-panel hidden">
-        <div id="rooms-empty" class="hidden bg-stone-50 border border-dashed border-stone-300 rounded-lg p-8 text-center">
-          <p class="text-stone-500">No rooms loaded yet — the host needs to set up the Google Sheet (see README).</p>
-        </div>
-        <div id="rooms-table" class="overflow-x-auto"></div>
-      </div>
-
-      <details class="mt-6 text-sm text-stone-600">
-        <summary class="cursor-pointer hover:text-stone-900"><span class="arrow">▶</span> Want to add yourself to the list?</summary>
-        <div id="sheet-edit-link" class="mt-3 ml-5 space-y-2">
-          <p>Submit your info via the Google Form below — Rick reviews each entry before it shows up here.</p>
-          <a id="submit-form-btn" href="#" target="_blank" rel="noopener" class="inline-block bg-dx-red text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition">📝 Submit your info</a>
-          <p id="submit-form-fallback" class="text-xs text-stone-500 hidden">(Form link not configured yet — ping Rick on the Delta Chi groupchat to add you manually.)</p>
-        </div>
-      </details>
       <p id="roster-updated" class="text-xs text-stone-400 mt-3"></p>
     </div>
   </section>

@@ -165,39 +165,17 @@ document.addEventListener('DOMContentLoaded', init);
 
 // ---------- Roster (auto-published from private Google Sheet via Apps Script) ----------
 
-function bindRosterTabs() {
-  document.querySelectorAll('.roster-tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.roster-tab').forEach(b => {
-        b.classList.remove('active');
-        b.classList.add('text-stone-500');
-      });
-      btn.classList.add('active');
-      btn.classList.remove('text-stone-500');
-      document.querySelectorAll('.roster-panel').forEach(p => p.classList.add('hidden'));
-      document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
-    });
-  });
-}
+function bindRosterTabs() { /* no-op: tabs removed in favor of single attendee list */ }
 
 function renderRoster() {
   const attendees = rosterData.attendees || [];
-  const rooms = rosterData.rooms || [];
-
   document.getElementById('count-attending').textContent = attendees.length;
-  document.getElementById('count-rooms').textContent = rooms.length;
 
   if (attendees.length === 0) {
     document.getElementById('attending-empty').classList.remove('hidden');
   } else {
     renderAttending(attendees);
     renderRoommateFinder(attendees);
-  }
-
-  if (rooms.length === 0) {
-    document.getElementById('rooms-empty').classList.remove('hidden');
-  } else {
-    renderRooms(rooms);
   }
 
   if (rosterData.updated_at) {
@@ -232,27 +210,7 @@ function renderAttending(rows) {
   document.getElementById('attending-table').innerHTML = html;
 }
 
-function renderRooms(rows) {
-  const cols = Object.keys(rows[0]);
-  const bookedCol = cols.find(c => /booked/i.test(c));
-  const html = `
-    <table class="roster">
-      <thead><tr>${cols.map(c => `<th>${escapeHtml(c)}</th>`).join('')}</tr></thead>
-      <tbody>
-        ${rows.map(r => `<tr>${cols.map(c => {
-          let val = r[c] || '';
-          if (c === bookedCol) {
-            const v = String(val).trim().toUpperCase();
-            if (v === 'Y' || v === 'YES' || v === 'TRUE') val = '<span class="pill pill-booked">Booked</span>';
-            else if (v === 'N' || v === 'NO' || v === 'FALSE') val = '<span class="pill pill-pending">Pending</span>';
-            else val = escapeHtml(val);
-          } else { val = escapeHtml(val); }
-          return `<td>${val}</td>`;
-        }).join('')}</tr>`).join('')}
-      </tbody>
-    </table>`;
-  document.getElementById('rooms-table').innerHTML = html;
-}
+function renderRooms() { /* no-op: rooms section removed */ }
 
 function renderRoommateFinder(attendees) {
   const cols = Object.keys(attendees[0]);
