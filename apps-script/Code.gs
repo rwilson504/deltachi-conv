@@ -132,13 +132,27 @@ function onSheetEdit(e) {
   const sheet = e.range.getSheet();
   const sheetName = sheet.getName();
   if (sheetName !== ATTENDEES_SHEET_NAME && sheetName !== ROOMS_SHEET_NAME) return;
+  // Don't react to header-row edits
+  if (e.range.getRow() === 1) return;
+
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-  const approvedCol = headers.findIndex(h => String(h).trim().toLowerCase() === APPROVAL_COL.toLowerCase()) + 1;
-  if (approvedCol === 0) return;
-  if (e.range.getColumn() !== approvedCol) return;
-  // Clear the amber highlight once decided
-  e.range.setBackground(null);
-  publishNow();
+  const approvedColIdx = headers.findIndex(h => String(h).trim().toLowerCase() === APPROVAL_COL.toLowerCase());
+
+  // If the edit IS in the Approved column, clear the amber pending highlight.
+  if (approvedColIdx >= 0 && e.range.getColumn() === approvedColIdx + 1) {
+    e.range.setBackground(null);
+    publishNow();
+    return;
+  }
+
+  // Otherwise, only republish if this edit is on a row that's currently Approved
+  // (no point in republishing edits to pending/denied rows — they're not in the public JSON anyway).
+  if (approvedColIdx < 0) return;
+  const editedRow = e.range.getRow();
+  const approval = String(sheet.getRange(editedRow, approvedColIdx + 1).getValue() || '').trim().toUpperCase();
+  if (APPROVED_VALUES.has(approval)) {
+    publishNow();
+  }
 }
 
 function publishNow() {
