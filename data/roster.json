@@ -1,6 +1,6 @@
 {
   "_comment": "Auto-managed by the Sheet ? GitHub Apps Script bridge. Do not hand-edit.",
-  "updated_at": "2026-05-07T19:49:28.236Z",
+  "updated_at": "2026-05-07T21:41:58.118Z",
   "submit_form_url": "https://forms.gle/4sJ6rPA4j2uRpPBC9",
   "attendees": [
     {
@@ -26,6 +26,14 @@
       "Departure": "Sunday",
       "Needs Roommate": "I already have a confirmed roommate",
       "Notes": ""
+    },
+    {
+      "Name": "Nick Hohenberger",
+      "Chapter": "Kent State '00",
+      "Arrival": "Wednesday",
+      "Departure": "Sunday",
+      "Needs Roommate": "I already have a confirmed roommate",
+      "Notes": "Will Mickey and Rick be providing snuggle services for those that are drunk and hung over."
     }
   ],
   "rooms": []
