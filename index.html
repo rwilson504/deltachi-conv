@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Delta Chi Convention Guide — Indianapolis 2026</title>
+  <meta name="description" content="Unofficial brother's guide to the Delta Chi 64th International Convention — Indianapolis, July 22-26, 2026. Hotel info, places to eat, breweries, and the Friday brew tour." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍺%3C/text%3E%3C/svg%3E" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    :root { --dx-red: #C41E3A; --dx-buff: #E8C87C; --dx-dark: #1a1a1a; }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    .dx-red { color: var(--dx-red); }
+    .bg-dx-red { background-color: var(--dx-red); }
+    .bg-dx-dark { background-color: var(--dx-dark); }
+    .border-dx-red { border-color: var(--dx-red); }
+    #map { height: 500px; border-radius: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    .pin-food { background:#22c55e; }
+    .pin-brewery { background:#f59e0b; }
+    .pin-hotel { background:#C41E3A; }
+    .leaflet-popup-content { font-size:14px; line-height:1.4; }
+    .leaflet-popup-content strong { color: var(--dx-red); }
+    .filter-btn { transition: all 0.15s ease; }
+    .filter-btn.active { background-color: var(--dx-red); color:white; }
+    details summary { cursor: pointer; list-style: none; }
+    details summary::-webkit-details-marker { display:none; }
+    details[open] summary .arrow { transform: rotate(90deg); }
+    .arrow { transition: transform 0.2s; display:inline-block; }
+  </style>
+</head>
+<body class="bg-stone-50 text-stone-800">
+
+  <!-- Header -->
+  <header class="bg-dx-dark text-white">
+    <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <a href="#top" class="text-xl font-bold flex items-center gap-2">
+        <span class="text-2xl">🍺</span> <span>Delta Chi Conv</span>
+      </a>
+      <div class="hidden md:flex gap-6 text-sm">
+        <a href="#map-section" class="hover:text-amber-300">Map</a>
+        <a href="#eat" class="hover:text-amber-300">Eat</a>
+        <a href="#drink" class="hover:text-amber-300">Drink</a>
+        <a href="#brew-tour" class="hover:text-amber-300">Brew Tour</a>
+        <a href="#logistics" class="hover:text-amber-300">Logistics</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section id="top" class="bg-gradient-to-br from-stone-900 via-stone-800 to-red-900 text-white py-16 md:py-24">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p class="text-amber-300 font-semibold tracking-widest text-sm md:text-base">DELTA CHI 64TH INTERNATIONAL CONVENTION</p>
+      <h1 class="text-4xl md:text-6xl font-bold mt-3 mb-4">Indianapolis 2026</h1>
+      <p class="text-xl md:text-2xl text-stone-200 mb-2">July 22 – 26 · Hyatt Regency Indianapolis</p>
+      <p class="text-stone-300 max-w-2xl mx-auto mb-8">A brother's guide to where to eat, where to drink, and how to get to the brew tour. Built by brothers, for brothers.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="#map-section" class="bg-amber-400 text-stone-900 px-6 py-3 rounded-lg font-semibold hover:bg-amber-300 transition">📍 Open Map</a>
+        <a href="#brew-tour" class="bg-white/10 backdrop-blur text-white px-6 py-3 rounded-lg font-semibold hover:bg-white/20 transition">🍺 Friday Brew Tour</a>
+      </div>
+      <p id="countdown" class="mt-8 text-stone-300 text-sm"></p>
+    </div>
+  </section>
+
+  <!-- Map -->
+  <section id="map-section" class="max-w-6xl mx-auto px-4 py-12">
+    <div class="flex items-end justify-between mb-4 flex-wrap gap-3">
+      <div>
+        <h2 class="text-3xl font-bold">The Map</h2>
+        <p class="text-stone-600 mt-1">Hotel, restaurants, and breweries — all the spots you need.</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button class="filter-btn active px-4 py-2 rounded-full text-sm bg-stone-200 text-stone-700" data-filter="all">All (<span id="count-all">0</span>)</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm bg-stone-200 text-stone-700" data-filter="hotel">🏨 Hotel</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm bg-stone-200 text-stone-700" data-filter="food">🍴 Food (<span id="count-food">0</span>)</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm bg-stone-200 text-stone-700" data-filter="brewery">🍺 Breweries (<span id="count-brewery">0</span>)</button>
+      </div>
+    </div>
+    <div id="map"></div>
+    <p class="text-stone-500 text-xs mt-3">Map data © OpenStreetMap contributors · Place data via Google Places API</p>
+  </section>
+
+  <!-- Eat -->
+  <section id="eat" class="bg-white py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold">🍴 Eat</h2>
+        <p class="text-stone-600 mt-1">Moderate-priced spots within walking distance of the Hyatt. All ⭐4.3+ with real review counts.</p>
+      </div>
+      <div id="food-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- Drink -->
+  <section id="drink" class="py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold">🍺 Drink</h2>
+        <p class="text-stone-600 mt-1">Indianapolis has a stacked craft brewery scene. These are within ~5 mi of the hotel.</p>
+      </div>
+      <div id="brewery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+  </section>
+
+  <!-- Brew Tour -->
+  <section id="brew-tour" class="bg-stone-900 text-white py-16">
+    <div class="max-w-6xl mx-auto px-4">
+      <p class="text-amber-300 font-semibold tracking-widest text-sm">FRIDAY · JULY 24, 2026</p>
+      <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-2">Brew Tour</h2>
+      <p class="text-stone-300 mb-8">3 stops · 4-5 hours · 25 brothers · ~$36-48/person all-in (target $75 budget)</p>
+
+      <div id="tour-stops" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12"></div>
+
+      <h3 class="text-2xl font-bold mb-4">🚌 Charter Operators (Call These)</h3>
+      <p class="text-stone-300 mb-6 text-sm">Recommended call order. Ask each: "Friday July 24, 2026 afternoon, 5-hour block, 25-passenger mini-coach, downtown Hyatt Regency pickup, 3 brewery stops."</p>
+      <div id="charter-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+      <details class="mt-8 bg-white/5 rounded-lg p-4">
+        <summary class="font-semibold text-amber-300"><span class="arrow">▶</span> Budget reality check</summary>
+        <p class="text-stone-300 mt-3 text-sm">Indy mini-coach charter rates run roughly $125-175/hr. 5 hours = $625-$875 vehicle. Plus 18-22% gratuity + fuel surcharge → expect <strong class="text-white">$900-$1,200 all-in</strong>. With 25 brothers that's $36-48/person — well under the $75/person budget. Buffer covers tip + any surprises. <strong class="text-white">Book by mid-May 2026</strong>: Indy summer Fridays book 8-10 weeks ahead.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Logistics -->
+  <section id="logistics" class="py-12 bg-stone-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-8">🏨 Logistics</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-xl font-bold mb-2">Convention HQ</h3>
+          <p class="text-stone-700"><strong>Hyatt Regency Indianapolis</strong></p>
+          <p class="text-stone-600">1 S Capitol Ave, Indianapolis, IN 46204</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Hyatt+Regency+Indianapolis" class="text-red-700 hover:underline text-sm mt-2 inline-block">Open in Google Maps →</a>
+        </div>
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-xl font-bold mb-2">Convention Dates</h3>
+          <p class="text-stone-700">Wednesday July 22 → Sunday July 26, 2026</p>
+          <p class="text-stone-600 text-sm mt-1">64th International Convention</p>
+          <a href="https://web.cvent.com/event/e55024cd-8dfc-44ad-9d1a-2bda98503b2d/summary" class="text-red-700 hover:underline text-sm mt-2 inline-block" target="_blank">Official event page →</a>
+        </div>
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-xl font-bold mb-2">Airport</h3>
+          <p class="text-stone-700"><strong>Indianapolis International (IND)</strong></p>
+          <p class="text-stone-600 text-sm">~12 mi / 20 min from Hyatt. IndyGo Route 8 ($1.75) runs from airport to downtown. Uber/Lyft ~$25-35.</p>
+        </div>
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-xl font-bold mb-2">Getting Around</h3>
+          <p class="text-stone-600 text-sm">Most food spots are within 0.5 mi of the hotel — walking distance. The Indianapolis Cultural Trail loops through downtown. Bird/Lime scooters everywhere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-stone-900 text-stone-400 text-center py-8 text-sm">
+    <p>Built by a brother for the brothers · <a href="https://github.com/rwilson504/deltachi-conv" class="text-amber-300 hover:underline">Source on GitHub</a></p>
+    <p class="mt-2 text-xs text-stone-500">Unofficial. Not affiliated with Delta Chi Fraternity HQ.</p>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

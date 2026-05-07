@@ -1,0 +1,63 @@
+{
+  "name": "Friday Brew Tour",
+  "date": "2026-07-24",
+  "duration_hours": "4-5",
+  "stops": [
+    {
+      "time": "1:00 PM",
+      "name": "Sun King Brewery",
+      "reason": "Indy's flagship craft brewery, big group-friendly taproom",
+      "lat": 39.776722,
+      "lng": -86.151861
+    },
+    {
+      "time": "2:30 PM",
+      "name": "Guggman Haus Brewing Co.",
+      "reason": "Family-run neighborhood brewery, killer patio, lighter beers for mid-tour",
+      "lat": 39.788289,
+      "lng": -86.181361
+    },
+    {
+      "time": "4:00 PM",
+      "name": "The Hangar",
+      "reason": "Highest-rated brewery in Indy (4.9\u2605/4,870 reviews) \u2014 perfect closer",
+      "lat": 39.76,
+      "lng": -86.158889
+    }
+  ],
+  "charters": [
+    {
+      "name": "Ale Force One Party Bus",
+      "phone": "(317) 443-2776",
+      "url": "http://www.aleforceonebus.com/",
+      "note": "Brewery-tour specialist \u2014 call first"
+    },
+    {
+      "name": "Avant Garde Limousines",
+      "phone": "(317) 696-2031",
+      "url": "https://www.avantgardelimos.com/",
+      "note": "Top-rated 5.0\u2605 (919 reviews)"
+    },
+    {
+      "name": "Aadvanced Limousines",
+      "phone": "(317) 716-1201",
+      "url": "http://www.317limousines.com/",
+      "note": "High volume + great reviews"
+    },
+    {
+      "name": "National Charter Bus Indy",
+      "phone": "(317) 735-6979",
+      "url": "https://www.nationalbuscharter.com/indianapolis-charter-bus",
+      "note": "National brand, local office"
+    },
+    {
+      "name": "Royal Transportation",
+      "phone": "(317) 529-8040",
+      "url": "https://royalindy.com/",
+      "note": "Full + mini-coach"
+    }
+  ],
+  "budget_per_person": 75,
+  "expected_actual": "$36-48/person",
+  "headcount": 25
+}
