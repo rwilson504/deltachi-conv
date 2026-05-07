@@ -26,6 +26,26 @@ const APPROVED_VALUES = new Set(['Y', 'YES', 'TRUE', '1', '✓', 'X']);
 const ATTENDEES_SHEET_NAME = 'Attendees';
 const ROOMS_SHEET_NAME = 'Rooms';
 
+const ATTENDEES_HEADERS = ['Name', 'Chapter', 'Email', 'Phone', 'Arrival', 'Departure', 'Needs Roommate', 'Notes', 'Approved'];
+const ROOMS_HEADERS = ['Room', 'Occupants', 'Booked', 'Notes', 'Approved'];
+
+// Returns the named sheet, creating it with default headers if it doesn't exist.
+function ensureSheet(ss, name, headers) {
+  let sh = ss.getSheetByName(name);
+  if (sh) return sh;
+  sh = ss.insertSheet(name);
+  sh.getRange(1, 1, 1, headers.length).setValues([headers]);
+  sh.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#f3f4f6');
+  sh.setFrozenRows(1);
+  // Find Approved column and add a quick data validation hint
+  const approvedIdx = headers.findIndex(h => h.toLowerCase() === APPROVAL_COL.toLowerCase());
+  if (approvedIdx >= 0) {
+    sh.getRange(2, approvedIdx + 1, 1000, 1).setHorizontalAlignment('center');
+  }
+  Logger.log('Created missing tab "' + name + '" with headers: ' + headers.join(', '));
+  return sh;
+}
+
 // ============================================================================
 // FORM SUBMIT → auto-copy into Attendees tab
 // ============================================================================
@@ -50,11 +70,7 @@ const FORM_TO_ATTENDEE_MAP = [
 
 function onFormSubmit(e) {
   const ss = SpreadsheetApp.getActive();
-  const attendees = ss.getSheetByName(ATTENDEES_SHEET_NAME);
-  if (!attendees) {
-    Logger.log('No Attendees sheet — creating one.');
-    return;
-  }
+  const attendees = ensureSheet(ss, ATTENDEES_SHEET_NAME, ATTENDEES_HEADERS);
   const headers = attendees.getRange(1, 1, 1, Math.max(attendees.getLastColumn(), 1)).getValues()[0]
     .map(h => String(h).trim());
 
@@ -132,8 +148,8 @@ function publishNow() {
   if (!token) throw new Error('GITHUB_TOKEN script property not set. See setup instructions in the file header.');
 
   const submitFormUrl = props.getProperty('SUBMIT_FORM_URL') || '';
-  const attendees = readApproved(ss.getSheetByName(ATTENDEES_SHEET_NAME));
-  const rooms     = readApproved(ss.getSheetByName(ROOMS_SHEET_NAME));
+  const attendees = readApproved(ensureSheet(ss, ATTENDEES_SHEET_NAME, ATTENDEES_HEADERS));
+  const rooms     = readApproved(ensureSheet(ss, ROOMS_SHEET_NAME, ROOMS_HEADERS));
 
   const payload = {
     _comment: 'Auto-managed by the Sheet → GitHub Apps Script bridge. Do not hand-edit.',
@@ -247,3 +263,19 @@ function setSubmitFormUrl() {
 
 // Manually publish without an edit trigger, for first-run / testing
 function manualPublish() { publishNow(); }
+
+// Re-import every existing form response into Attendees (idempotent: appends new rows;
+// won't dedupe — don't run twice unless you want duplicates).
+function backfillFormResponses() {
+  const ss = SpreadsheetApp.getActive();
+  const responses = ss.getSheetByName('Form Responses 1');
+  if (!responses || responses.getLastRow() < 2) { Logger.log('No form responses to backfill.'); return; }
+  const headers = responses.getRange(1, 1, 1, responses.getLastColumn()).getValues()[0];
+  const data = responses.getRange(2, 1, responses.getLastRow() - 1, responses.getLastColumn()).getValues();
+  data.forEach(row => {
+    const namedValues = {};
+    headers.forEach((h, i) => { namedValues[String(h)] = [row[i]]; });
+    onFormSubmit({ namedValues });
+  });
+  Logger.log('Backfilled ' + data.length + ' form responses into Attendees.');
+}
