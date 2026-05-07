@@ -73,6 +73,78 @@
     </div>
   </section>
 
+  <!-- Logistics -->
+  <section id="logistics" class="py-12 bg-stone-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-8">🏨 Logistics</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-xl font-bold mb-2">Convention HQ</h3>
+          <p class="text-stone-700"><strong>Hyatt Regency Indianapolis</strong></p>
+          <p class="text-stone-600">1 S Capitol Ave, Indianapolis, IN 46204</p>
+          <a href="https://www.google.com/maps/search/?api=1&query=Hyatt+Regency+Indianapolis" class="text-red-700 hover:underline text-sm mt-2 inline-block">Open in Google Maps →</a>
+        </div>
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-xl font-bold mb-2">Convention Dates</h3>
+          <p class="text-stone-700">Wednesday July 22 → Sunday July 26, 2026</p>
+          <p class="text-stone-600 text-sm mt-1">64th International Convention</p>
+          <a href="https://web.cvent.com/event/e55024cd-8dfc-44ad-9d1a-2bda98503b2d/summary" class="text-red-700 hover:underline text-sm mt-2 inline-block" target="_blank">Official event page →</a>
+        </div>
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-xl font-bold mb-2">Airport</h3>
+          <p class="text-stone-700"><strong>Indianapolis International (IND)</strong></p>
+          <p class="text-stone-600 text-sm">~12 mi / 20 min from Hyatt. IndyGo Route 8 ($1.75) runs from airport to downtown. Uber/Lyft ~$25-35.</p>
+        </div>
+        <div class="bg-white rounded-lg p-6 shadow-sm">
+          <h3 class="text-xl font-bold mb-2">Getting Around</h3>
+          <p class="text-stone-600 text-sm">Most food spots are within 0.5 mi of the hotel — walking distance. The Indianapolis Cultural Trail loops through downtown. Bird/Lime scooters everywhere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roster -->
+  <section id="roster" class="bg-white py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold">👥 Roster</h2>
+        <p class="text-stone-600 mt-1">Who's coming and who's still looking for a hotel partner.</p>
+      </div>
+
+      <!-- Roommate Finder Callout -->
+      <div id="roommate-finder" class="hidden mb-8 bg-gradient-to-r from-red-50 to-amber-50 border-l-4 border-dx-red rounded-lg p-5">
+        <h3 class="font-bold text-lg mb-2 dx-red">🤝 Looking for a hotel partner</h3>
+        <p class="text-stone-700 text-sm mb-3">These brothers want to split a room. Reach out!</p>
+        <div id="roommate-list" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Submit CTA (always visible) -->
+      <div class="mb-6 flex flex-wrap items-center gap-3 bg-stone-50 border border-stone-200 rounded-lg p-4">
+        <div class="flex-1 min-w-[220px]">
+          <p class="font-semibold text-stone-900">Coming to the convention?</p>
+          <p class="text-sm text-stone-600">Submit your info — entries appear here once approved.</p>
+        </div>
+        <a id="submit-form-btn" href="#" target="_blank" rel="noopener" class="bg-dx-red text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition">📝 Submit your info</a>
+        <p id="submit-form-fallback" class="text-xs text-stone-500 hidden">(Form link not configured yet — ping Rick on the Delta Chi groupchat to add you manually.)</p>
+      </div>
+
+      <!-- Attending count -->
+      <div class="mb-3 text-sm text-stone-600">
+        <span class="font-semibold text-stone-900"><span id="count-attending">—</span></span> attending so far
+      </div>
+
+      <!-- Attending table -->
+      <div id="tab-attending" class="roster-panel">
+        <div id="attending-empty" class="hidden bg-stone-50 border border-dashed border-stone-300 rounded-lg p-8 text-center">
+          <p class="text-stone-500">No attendees yet — be the first to <a href="#submit-form-btn" class="dx-red underline">submit</a>!</p>
+        </div>
+        <div id="attending-table" class="overflow-x-auto"></div>
+      </div>
+
+      <p id="roster-updated" class="text-xs text-stone-400 mt-3"></p>
+    </div>
+  </section>
+
   <!-- Map -->
   <section id="map-section" class="max-w-6xl mx-auto px-4 py-12">
     <div class="flex items-end justify-between mb-4 flex-wrap gap-3">
@@ -121,78 +193,6 @@
       <p class="text-stone-300 mb-8">3 stops · 4-5 hours · chartered transportation</p>
 
       <div id="tour-stops" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
-    </div>
-  </section>
-
-  <!-- Roster -->
-  <section id="roster" class="bg-white py-12">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="mb-8">
-        <h2 class="text-3xl font-bold">👥 Roster</h2>
-        <p class="text-stone-600 mt-1">Who's coming and who's still looking for a hotel partner.</p>
-      </div>
-
-      <!-- Roommate Finder Callout -->
-      <div id="roommate-finder" class="hidden mb-8 bg-gradient-to-r from-red-50 to-amber-50 border-l-4 border-dx-red rounded-lg p-5">
-        <h3 class="font-bold text-lg mb-2 dx-red">🤝 Looking for a hotel partner</h3>
-        <p class="text-stone-700 text-sm mb-3">These brothers want to split a room. Reach out!</p>
-        <div id="roommate-list" class="flex flex-wrap gap-2"></div>
-      </div>
-
-      <!-- Submit CTA (always visible) -->
-      <div class="mb-6 flex flex-wrap items-center gap-3 bg-stone-50 border border-stone-200 rounded-lg p-4">
-        <div class="flex-1 min-w-[220px]">
-          <p class="font-semibold text-stone-900">Coming to the convention?</p>
-          <p class="text-sm text-stone-600">Submit your info — entries appear here once approved.</p>
-        </div>
-        <a id="submit-form-btn" href="#" target="_blank" rel="noopener" class="bg-dx-red text-white px-5 py-2.5 rounded-lg font-semibold hover:opacity-90 transition">📝 Submit your info</a>
-        <p id="submit-form-fallback" class="text-xs text-stone-500 hidden">(Form link not configured yet — ping Rick on the Delta Chi groupchat to add you manually.)</p>
-      </div>
-
-      <!-- Attending count -->
-      <div class="mb-3 text-sm text-stone-600">
-        <span class="font-semibold text-stone-900"><span id="count-attending">—</span></span> attending so far
-      </div>
-
-      <!-- Attending table -->
-      <div id="tab-attending" class="roster-panel">
-        <div id="attending-empty" class="hidden bg-stone-50 border border-dashed border-stone-300 rounded-lg p-8 text-center">
-          <p class="text-stone-500">No attendees yet — be the first to <a href="#submit-form-btn" class="dx-red underline">submit</a>!</p>
-        </div>
-        <div id="attending-table" class="overflow-x-auto"></div>
-      </div>
-
-      <p id="roster-updated" class="text-xs text-stone-400 mt-3"></p>
-    </div>
-  </section>
-
-  <!-- Logistics -->
-  <section id="logistics" class="py-12 bg-stone-50">
-    <div class="max-w-6xl mx-auto px-4">
-      <h2 class="text-3xl font-bold mb-8">🏨 Logistics</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-white rounded-lg p-6 shadow-sm">
-          <h3 class="text-xl font-bold mb-2">Convention HQ</h3>
-          <p class="text-stone-700"><strong>Hyatt Regency Indianapolis</strong></p>
-          <p class="text-stone-600">1 S Capitol Ave, Indianapolis, IN 46204</p>
-          <a href="https://www.google.com/maps/search/?api=1&query=Hyatt+Regency+Indianapolis" class="text-red-700 hover:underline text-sm mt-2 inline-block">Open in Google Maps →</a>
-        </div>
-        <div class="bg-white rounded-lg p-6 shadow-sm">
-          <h3 class="text-xl font-bold mb-2">Convention Dates</h3>
-          <p class="text-stone-700">Wednesday July 22 → Sunday July 26, 2026</p>
-          <p class="text-stone-600 text-sm mt-1">64th International Convention</p>
-          <a href="https://web.cvent.com/event/e55024cd-8dfc-44ad-9d1a-2bda98503b2d/summary" class="text-red-700 hover:underline text-sm mt-2 inline-block" target="_blank">Official event page →</a>
-        </div>
-        <div class="bg-white rounded-lg p-6 shadow-sm">
-          <h3 class="text-xl font-bold mb-2">Airport</h3>
-          <p class="text-stone-700"><strong>Indianapolis International (IND)</strong></p>
-          <p class="text-stone-600 text-sm">~12 mi / 20 min from Hyatt. IndyGo Route 8 ($1.75) runs from airport to downtown. Uber/Lyft ~$25-35.</p>
-        </div>
-        <div class="bg-white rounded-lg p-6 shadow-sm">
-          <h3 class="text-xl font-bold mb-2">Getting Around</h3>
-          <p class="text-stone-600 text-sm">Most food spots are within 0.5 mi of the hotel — walking distance. The Indianapolis Cultural Trail loops through downtown. Bird/Lime scooters everywhere.</p>
-        </div>
-      </div>
     </div>
   </section>
 
