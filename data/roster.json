@@ -1,6 +1,6 @@
 {
   "_comment": "Auto-managed by the Sheet ? GitHub Apps Script bridge. Do not hand-edit.",
-  "updated_at": "2026-05-07T18:55:06.186Z",
+  "updated_at": "2026-05-07T19:49:28.236Z",
   "submit_form_url": "https://forms.gle/4sJ6rPA4j2uRpPBC9",
   "attendees": [
     {
@@ -14,6 +14,14 @@
     {
       "Name": "Justin (J.D) Donnelly",
       "Chapter": "Kent State ?02",
+      "Arrival": "Wednesday",
+      "Departure": "Sunday",
+      "Needs Roommate": "I already have a confirmed roommate",
+      "Notes": ""
+    },
+    {
+      "Name": "John Larger",
+      "Chapter": "Kent State",
       "Arrival": "Wednesday",
       "Departure": "Sunday",
       "Needs Roommate": "I already have a confirmed roommate",
