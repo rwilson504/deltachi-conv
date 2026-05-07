@@ -136,19 +136,21 @@ function renderTour() {
   `).join('');
 
   const list = document.getElementById('charter-list');
-  list.innerHTML = tourData.charters.map((c, i) => `
-    <div class="bg-white/5 rounded-lg p-4 border border-white/10">
-      <div class="flex items-center gap-2 mb-1">
-        ${i === 0 ? '<span class="text-xs bg-amber-300 text-stone-900 px-2 py-0.5 rounded font-bold">CALL FIRST</span>' : `<span class="text-xs text-stone-400">#${i+1}</span>`}
+  if (list) {
+    list.innerHTML = tourData.charters.map((c, i) => `
+      <div class="bg-white/5 rounded-lg p-4 border border-white/10">
+        <div class="flex items-center gap-2 mb-1">
+          ${i === 0 ? '<span class="text-xs bg-amber-300 text-stone-900 px-2 py-0.5 rounded font-bold">CALL FIRST</span>' : `<span class="text-xs text-stone-400">#${i+1}</span>`}
+        </div>
+        <h4 class="font-bold text-lg">${c.name}</h4>
+        <p class="text-stone-300 text-sm mb-2">${c.note}</p>
+        <div class="flex gap-3 text-sm">
+          <a href="tel:${c.phone.replace(/[^0-9+]/g,'')}" class="text-amber-300 hover:underline">📞 ${c.phone}</a>
+          <a href="${c.url}" target="_blank" class="text-amber-300 hover:underline">🌐 Site</a>
+        </div>
       </div>
-      <h4 class="font-bold text-lg">${c.name}</h4>
-      <p class="text-stone-300 text-sm mb-2">${c.note}</p>
-      <div class="flex gap-3 text-sm">
-        <a href="tel:${c.phone.replace(/[^0-9+]/g,'')}" class="text-amber-300 hover:underline">📞 ${c.phone}</a>
-        <a href="${c.url}" target="_blank" class="text-amber-300 hover:underline">🌐 Site</a>
-      </div>
-    </div>
-  `).join('');
+    `).join('');
+  }
 }
 
 function renderCountdown() {
