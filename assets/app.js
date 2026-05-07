@@ -6,15 +6,17 @@ const CATEGORY_STYLE = {
   brewery: { color: '#f59e0b', emoji: '🍺', label: 'Brewery' }
 };
 
-let map, allMarkers = [], placesData = [], tourData = null, currentFilter = 'all';
+let map, allMarkers = [], placesData = [], tourData = null, rosterData = null, currentFilter = 'all';
 
 async function init() {
-  const [places, tour] = await Promise.all([
+  const [places, tour, roster] = await Promise.all([
     fetch('data/places.json').then(r => r.json()),
-    fetch('data/tour.json').then(r => r.json())
+    fetch('data/tour.json').then(r => r.json()),
+    fetch('data/roster.json?_=' + Date.now()).then(r => r.json()).catch(() => ({attendees:[], rooms:[]}))
   ]);
   placesData = places;
   tourData = tour;
+  rosterData = roster;
 
   initMap();
   renderMarkers();
@@ -24,6 +26,8 @@ async function init() {
   renderCounts();
   renderCountdown();
   bindFilters();
+  bindRosterTabs();
+  renderRoster();
 }
 
 function initMap() {
@@ -158,3 +162,121 @@ function renderCountdown() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+// ---------- Roster (auto-published from private Google Sheet via Apps Script) ----------
+
+function bindRosterTabs() {
+  document.querySelectorAll('.roster-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.roster-tab').forEach(b => {
+        b.classList.remove('active');
+        b.classList.add('text-stone-500');
+      });
+      btn.classList.add('active');
+      btn.classList.remove('text-stone-500');
+      document.querySelectorAll('.roster-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+    });
+  });
+}
+
+function renderRoster() {
+  const attendees = rosterData.attendees || [];
+  const rooms = rosterData.rooms || [];
+
+  document.getElementById('count-attending').textContent = attendees.length;
+  document.getElementById('count-rooms').textContent = rooms.length;
+
+  if (attendees.length === 0) {
+    document.getElementById('attending-empty').classList.remove('hidden');
+  } else {
+    renderAttending(attendees);
+    renderRoommateFinder(attendees);
+  }
+
+  if (rooms.length === 0) {
+    document.getElementById('rooms-empty').classList.remove('hidden');
+  } else {
+    renderRooms(rooms);
+  }
+
+  if (rosterData.updated_at) {
+    const stamp = document.getElementById('roster-updated');
+    if (stamp) {
+      const d = new Date(rosterData.updated_at);
+      stamp.textContent = `Last updated ${d.toLocaleDateString()} ${d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+    }
+  }
+
+  // Wire submit form button
+  const btn = document.getElementById('submit-form-btn');
+  const fallback = document.getElementById('submit-form-fallback');
+  if (rosterData.submit_form_url) {
+    btn.href = rosterData.submit_form_url;
+  } else {
+    btn.classList.add('opacity-50', 'cursor-not-allowed');
+    btn.addEventListener('click', e => e.preventDefault());
+    if (fallback) fallback.classList.remove('hidden');
+  }
+}
+
+function renderAttending(rows) {
+  const cols = Object.keys(rows[0]);
+  const html = `
+    <table class="roster">
+      <thead><tr>${cols.map(c => `<th>${escapeHtml(c)}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${rows.map(r => `<tr>${cols.map(c => `<td>${escapeHtml(r[c] || '')}</td>`).join('')}</tr>`).join('')}
+      </tbody>
+    </table>`;
+  document.getElementById('attending-table').innerHTML = html;
+}
+
+function renderRooms(rows) {
+  const cols = Object.keys(rows[0]);
+  const bookedCol = cols.find(c => /booked/i.test(c));
+  const html = `
+    <table class="roster">
+      <thead><tr>${cols.map(c => `<th>${escapeHtml(c)}</th>`).join('')}</tr></thead>
+      <tbody>
+        ${rows.map(r => `<tr>${cols.map(c => {
+          let val = r[c] || '';
+          if (c === bookedCol) {
+            const v = String(val).trim().toUpperCase();
+            if (v === 'Y' || v === 'YES' || v === 'TRUE') val = '<span class="pill pill-booked">Booked</span>';
+            else if (v === 'N' || v === 'NO' || v === 'FALSE') val = '<span class="pill pill-pending">Pending</span>';
+            else val = escapeHtml(val);
+          } else { val = escapeHtml(val); }
+          return `<td>${val}</td>`;
+        }).join('')}</tr>`).join('')}
+      </tbody>
+    </table>`;
+  document.getElementById('rooms-table').innerHTML = html;
+}
+
+function renderRoommateFinder(attendees) {
+  const cols = Object.keys(attendees[0]);
+  const flagCol = cols.find(c => /roommate|partner|bunk|share/i.test(c));
+  if (!flagCol) return;
+  const seekers = attendees.filter(a => {
+    const v = String(a[flagCol] || '').trim().toUpperCase();
+    return v === 'Y' || v === 'YES' || v === 'TRUE' || v === '1' || v === '✓';
+  });
+  if (seekers.length === 0) return;
+  const finder = document.getElementById('roommate-finder');
+  const list = document.getElementById('roommate-list');
+  const nameCol = cols.find(c => /name/i.test(c)) || cols[0];
+  const chapterCol = cols.find(c => /chapter/i.test(c));
+  list.innerHTML = seekers.map(s => {
+    const name = escapeHtml(s[nameCol] || '');
+    const chapter = chapterCol ? ` <span class="text-stone-500 text-xs">(${escapeHtml(s[chapterCol] || '')})</span>` : '';
+    return `<span class="bg-white border border-amber-300 text-stone-800 px-3 py-1.5 rounded-full text-sm">${name}${chapter}</span>`;
+  }).join('');
+  finder.classList.remove('hidden');
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+}

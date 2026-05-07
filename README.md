@@ -23,8 +23,15 @@ It's a static site — no build step. Three things you might want to edit:
 | Add/remove places | `data/places.json` |
 | Change brew tour stops or charter list | `data/tour.json` |
 | Change page text/colors/layout | `index.html` and `assets/app.js` |
+| Manage attendees / rooms / submissions | **Don't touch `data/roster.json` directly** — it's auto-managed. See [`apps-script/SETUP.md`](./apps-script/SETUP.md). |
 
 After editing, just commit + push. GitHub Pages re-deploys in ~30 seconds.
+
+## Roster (attendees + rooms)
+
+The Roster section is fed by a **private Google Sheet** via a Google Apps Script that pushes only your approved rows to the public site. Brothers submit their info via a **Google Form**, you approve in the sheet, the site auto-updates.
+
+Full setup: [`apps-script/SETUP.md`](./apps-script/SETUP.md)
 
 ## Per-convention updates
 

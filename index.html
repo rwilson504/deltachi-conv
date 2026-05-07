@@ -28,6 +28,15 @@
     details summary::-webkit-details-marker { display:none; }
     details[open] summary .arrow { transform: rotate(90deg); }
     .arrow { transition: transform 0.2s; display:inline-block; }
+    .roster-tab.active { color: var(--dx-red); border-color: var(--dx-red) !important; }
+    table.roster { width:100%; border-collapse: collapse; font-size: 14px; }
+    table.roster th { text-align:left; background:#f5f5f4; padding:10px 12px; border-bottom:2px solid #e7e5e4; font-weight:600; color:#44403c; }
+    table.roster td { padding:10px 12px; border-bottom:1px solid #e7e5e4; vertical-align: top; }
+    table.roster tr:hover td { background:#fafaf9; }
+    .pill { display:inline-block; padding:2px 8px; border-radius:9999px; font-size:11px; font-weight:600; }
+    .pill-need { background:#fef3c7; color:#92400e; }
+    .pill-booked { background:#dcfce7; color:#166534; }
+    .pill-pending { background:#fee2e2; color:#991b1b; }
   </style>
 </head>
 <body class="bg-stone-50 text-stone-800">
@@ -43,6 +52,7 @@
         <a href="#eat" class="hover:text-amber-300">Eat</a>
         <a href="#drink" class="hover:text-amber-300">Drink</a>
         <a href="#brew-tour" class="hover:text-amber-300">Brew Tour</a>
+        <a href="#roster" class="hover:text-amber-300">Roster</a>
         <a href="#logistics" class="hover:text-amber-300">Logistics</a>
       </div>
     </nav>
@@ -120,6 +130,55 @@
         <summary class="font-semibold text-amber-300"><span class="arrow">▶</span> Budget reality check</summary>
         <p class="text-stone-300 mt-3 text-sm">Indy mini-coach charter rates run roughly $125-175/hr. 5 hours = $625-$875 vehicle. Plus 18-22% gratuity + fuel surcharge → expect <strong class="text-white">$900-$1,200 all-in</strong>. With 25 brothers that's $36-48/person — well under the $75/person budget. Buffer covers tip + any surprises. <strong class="text-white">Book by mid-May 2026</strong>: Indy summer Fridays book 8-10 weeks ahead.</p>
       </details>
+    </div>
+  </section>
+
+  <!-- Roster -->
+  <section id="roster" class="bg-white py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold">👥 Roster</h2>
+        <p class="text-stone-600 mt-1">Who's coming, who's bunking with who, and who still needs a roommate.</p>
+      </div>
+
+      <!-- Roommate Finder Callout -->
+      <div id="roommate-finder" class="hidden mb-8 bg-gradient-to-r from-red-50 to-amber-50 border-l-4 border-dx-red rounded-lg p-5">
+        <h3 class="font-bold text-lg mb-2 dx-red">🤝 Looking for a hotel partner</h3>
+        <p class="text-stone-700 text-sm mb-3">These brothers want to split a room. Reach out!</p>
+        <div id="roommate-list" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex gap-2 mb-4 border-b border-stone-200">
+        <button class="roster-tab active px-4 py-2 font-medium text-sm border-b-2 border-transparent" data-tab="attending">Attending (<span id="count-attending">—</span>)</button>
+        <button class="roster-tab px-4 py-2 font-medium text-sm border-b-2 border-transparent text-stone-500" data-tab="rooms">Hotel Rooms (<span id="count-rooms">—</span>)</button>
+      </div>
+
+      <!-- Attending table -->
+      <div id="tab-attending" class="roster-panel">
+        <div id="attending-empty" class="hidden bg-stone-50 border border-dashed border-stone-300 rounded-lg p-8 text-center">
+          <p class="text-stone-500">No attendees loaded yet — the host needs to set up the Google Sheet (see README).</p>
+        </div>
+        <div id="attending-table" class="overflow-x-auto"></div>
+      </div>
+
+      <!-- Rooms table -->
+      <div id="tab-rooms" class="roster-panel hidden">
+        <div id="rooms-empty" class="hidden bg-stone-50 border border-dashed border-stone-300 rounded-lg p-8 text-center">
+          <p class="text-stone-500">No rooms loaded yet — the host needs to set up the Google Sheet (see README).</p>
+        </div>
+        <div id="rooms-table" class="overflow-x-auto"></div>
+      </div>
+
+      <details class="mt-6 text-sm text-stone-600">
+        <summary class="cursor-pointer hover:text-stone-900"><span class="arrow">▶</span> Want to add yourself to the list?</summary>
+        <div id="sheet-edit-link" class="mt-3 ml-5 space-y-2">
+          <p>Submit your info via the Google Form below — Rick reviews each entry before it shows up here.</p>
+          <a id="submit-form-btn" href="#" target="_blank" rel="noopener" class="inline-block bg-dx-red text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition">📝 Submit your info</a>
+          <p id="submit-form-fallback" class="text-xs text-stone-500 hidden">(Form link not configured yet — ping Rick on the Delta Chi groupchat to add you manually.)</p>
+        </div>
+      </details>
+      <p id="roster-updated" class="text-xs text-stone-400 mt-3"></p>
     </div>
   </section>
 
