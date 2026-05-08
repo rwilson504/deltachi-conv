@@ -216,22 +216,38 @@
   <!-- Eat -->
   <section id="eat" class="bg-white py-12">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="mb-8">
-        <h2 class="text-3xl font-bold">🍴 Eat</h2>
-        <p class="text-stone-600 mt-1">Moderate-priced spots within walking distance of the Hyatt. All ⭐4.3+ with real review counts.</p>
-      </div>
-      <div id="food-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <details class="group">
+        <summary class="flex items-center justify-between cursor-pointer mb-2 list-none">
+          <div>
+            <h2 class="text-3xl font-bold">🍴 Eat</h2>
+            <p class="text-stone-600 mt-1 text-sm">Moderate-priced spots within walking distance of the Hyatt. All ⭐4.3+ with real review counts.</p>
+          </div>
+          <span class="text-stone-500 text-sm font-semibold flex items-center gap-2 ml-4 shrink-0">
+            <span class="group-open:hidden">Show 20</span><span class="hidden group-open:inline">Hide</span>
+            <span class="arrow">▶</span>
+          </span>
+        </summary>
+        <div id="food-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
+      </details>
     </div>
   </section>
 
   <!-- Drink -->
   <section id="drink" class="py-12">
     <div class="max-w-6xl mx-auto px-4">
-      <div class="mb-8">
-        <h2 class="text-3xl font-bold">🍺 Drink</h2>
-        <p class="text-stone-600 mt-1">Indianapolis has a stacked craft brewery scene. These are within ~5 mi of the hotel.</p>
-      </div>
-      <div id="brewery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <details class="group">
+        <summary class="flex items-center justify-between cursor-pointer mb-2 list-none">
+          <div>
+            <h2 class="text-3xl font-bold">🍺 Drink</h2>
+            <p class="text-stone-600 mt-1 text-sm">Indianapolis has a stacked craft brewery scene. These are within ~5 mi of the hotel.</p>
+          </div>
+          <span class="text-stone-500 text-sm font-semibold flex items-center gap-2 ml-4 shrink-0">
+            <span class="group-open:hidden">Show 20</span><span class="hidden group-open:inline">Hide</span>
+            <span class="arrow">▶</span>
+          </span>
+        </summary>
+        <div id="brewery-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6"></div>
+      </details>
     </div>
   </section>
 
