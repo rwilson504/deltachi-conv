@@ -1,6 +1,6 @@
 {
   "_comment": "Auto-managed by the Sheet ? GitHub Apps Script bridge. Do not hand-edit.",
-  "updated_at": "2026-05-21T19:10:04.783Z",
+  "updated_at": "2026-05-26T02:55:30.336Z",
   "submit_form_url": "https://forms.gle/4sJ6rPA4j2uRpPBC9",
   "attendees": [
     {
@@ -73,6 +73,14 @@
       "Arrival": "Wednesday",
       "Departure": "Sunday",
       "Needs Roommate": "I already have a confirmed roommate",
+      "Notes": ""
+    },
+    {
+      "Name": "Geoff Westerfield",
+      "Chapter": "Ohio State ?01",
+      "Arrival": "Thursday",
+      "Departure": "Saturday",
+      "Needs Roommate": "No, I prefer a single room (or have separate arrangements)",
       "Notes": ""
     }
   ],
