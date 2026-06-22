@@ -145,6 +145,7 @@ function renderTour() {
             <p class="text-xs font-bold uppercase tracking-widest text-stone-800 mb-2">Beer Bus Confirmed</p>
             <h3 class="text-2xl font-bold mb-2">$${tourData.cost_per_person}/person · ${transport.vehicle}</h3>
             <p class="text-sm text-stone-800">Transport by <a href="${transport.url}" target="_blank" rel="noopener" class="font-semibold underline hover:text-stone-950">${transport.name}</a>. Capacity is ${transport.capacity} passengers.</p>
+            <p class="text-sm text-stone-800 mt-2">We will have a cooler with ice and some waters on board as well.</p>
           </div>
           <div class="flex flex-col sm:flex-row md:flex-col gap-3 md:min-w-[190px]">
             <a href="${tourData.payment_url}" target="_blank" rel="noopener" class="bg-stone-950 text-white text-center px-5 py-3 rounded-lg font-bold hover:bg-stone-800 transition">Pay with PayPal →</a>
