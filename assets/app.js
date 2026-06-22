@@ -135,6 +135,26 @@ function renderTour() {
     </div>
   `).join('');
 
+  const details = document.getElementById('tour-details');
+  if (details && tourData.transport) {
+    const transport = tourData.transport;
+    details.innerHTML = `
+      <div class="bg-amber-400 text-stone-950 rounded-lg p-5 md:p-6 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-5 items-center">
+          <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-stone-800 mb-2">Beer Bus Confirmed</p>
+            <h3 class="text-2xl font-bold mb-2">$${tourData.cost_per_person}/person · ${transport.vehicle}</h3>
+            <p class="text-sm text-stone-800">Transport by <a href="${transport.url}" target="_blank" rel="noopener" class="font-semibold underline hover:text-stone-950">${transport.name}</a>. Capacity is ${transport.capacity} passengers.</p>
+          </div>
+          <div class="flex flex-col sm:flex-row md:flex-col gap-3 md:min-w-[190px]">
+            <a href="${tourData.payment_url}" target="_blank" rel="noopener" class="bg-stone-950 text-white text-center px-5 py-3 rounded-lg font-bold hover:bg-stone-800 transition">Pay with PayPal →</a>
+            <a href="${transport.url}" target="_blank" rel="noopener" class="bg-white/50 text-stone-950 text-center px-5 py-3 rounded-lg font-semibold hover:bg-white/70 transition">View Coach →</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
   const list = document.getElementById('charter-list');
   if (list) {
     list.innerHTML = tourData.charters.map((c, i) => `

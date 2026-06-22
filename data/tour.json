@@ -25,6 +25,16 @@
       "lng": -86.158889
     }
   ],
+  "payment_url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BBKRDRMPBF3RJ",
+  "cost_per_person": 55,
+  "transport": {
+    "name": "Avant Garde Limousines & Coach",
+    "phone": "(317) 696-2031",
+    "vehicle": "22 Passenger Executive Coach",
+    "capacity": 22,
+    "url": "https://www.avantgardelimos.com/22-passenger-executive-coach/",
+    "note": "Confirmed mini coach for the Friday brew tour"
+  },
   "charters": [
     {
       "name": "Ale Force One Party Bus",
@@ -35,8 +45,8 @@
     {
       "name": "Avant Garde Limousines",
       "phone": "(317) 696-2031",
-      "url": "https://www.avantgardelimos.com/",
-      "note": "Top-rated 5.0\u2605 (919 reviews)"
+      "url": "https://www.avantgardelimos.com/22-passenger-executive-coach/",
+      "note": "Selected transport: 22 Passenger Executive Coach"
     },
     {
       "name": "Aadvanced Limousines",
@@ -57,7 +67,7 @@
       "note": "Full + mini-coach"
     }
   ],
-  "budget_per_person": 75,
-  "expected_actual": "$36-48/person",
-  "headcount": 25
+  "budget_per_person": 55,
+  "expected_actual": "$55/person",
+  "headcount": 22
 }
