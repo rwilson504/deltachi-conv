@@ -312,17 +312,46 @@
     "url": "https://www.google.com/maps/search/?api=1&query=39.7640208,-86.1459462"
   },
   {
+    "id": "daredevil-brewing-co",
+    "name": "Daredevil Brewing Co.",
+    "category": "beertour",
+    "stop": 1,
+    "address": "1151 N Main St, Indianapolis, IN 46224",
+    "lat": 39.7826,
+    "lng": -86.2416,
+    "rating": 4.5,
+    "reviews": 498,
+    "price": null,
+    "tag": "Beer Tour · Stop 1",
+    "url": "https://www.google.com/maps/search/?api=1&query=39.7826,-86.2416"
+  },
+  {
     "id": "guggman-haus-brewing-co.",
     "name": "Guggman Haus Brewing Co.",
-    "category": "brewery",
+    "category": "beertour",
+    "stop": 2,
     "address": "1701 Gent Ave, Indianapolis, IN 46202, USA",
     "lat": 39.7905242,
     "lng": -86.18245950000001,
     "rating": 4.8,
     "reviews": 679,
     "price": null,
-    "tag": "Brewery",
+    "tag": "Beer Tour · Stop 2",
     "url": "https://www.google.com/maps/search/?api=1&query=39.7905242,-86.18245950000001"
+  },
+  {
+    "id": "mashcraft-on-delaware",
+    "name": "MashCraft On Delaware",
+    "category": "beertour",
+    "stop": 3,
+    "address": "2205 N Delaware St #104, Indianapolis, IN 46205",
+    "lat": 39.7991,
+    "lng": -86.1533,
+    "rating": 4.8,
+    "reviews": 192,
+    "price": null,
+    "tag": "Beer Tour · Stop 3",
+    "url": "https://www.google.com/maps/search/?api=1&query=39.7991,-86.1533"
   },
   {
     "id": "tap-indianapolis-(mass-ave)",

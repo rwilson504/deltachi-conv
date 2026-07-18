@@ -1,9 +1,10 @@
 // Delta Chi Convention Guide — interactive map + filters
 const HOTEL = { lat: 39.7664025, lng: -86.1611178 };
 const CATEGORY_STYLE = {
-  hotel:   { color: '#C41E3A', emoji: '🏨', label: 'Hotel' },
-  food:    { color: '#22c55e', emoji: '🍴', label: 'Food'  },
-  brewery: { color: '#f59e0b', emoji: '🍺', label: 'Brewery' }
+  hotel:    { color: '#C41E3A', emoji: '🏨', label: 'Hotel' },
+  food:     { color: '#22c55e', emoji: '🍴', label: 'Food'  },
+  brewery:  { color: '#f59e0b', emoji: '🍺', label: 'Brewery' },
+  beertour: { color: '#7c3aed', emoji: '🚌', label: 'Beer Tour' }
 };
 
 let map, allMarkers = [], placesData = [], tourData = null, rosterData = null, currentFilter = 'all';
@@ -38,11 +39,20 @@ function initMap() {
   }).addTo(map);
 }
 
-function makeIcon(category) {
+function mapsUrl(p) {
+  // Prefer a custom non-Google link (e.g. hotel's Hyatt page); otherwise
+  // resolve to the actual business by querying its name + address rather than coordinates.
+  if (p.url && !p.url.includes('google.com/maps')) return p.url;
+  return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(`${p.name}, ${p.address}`);
+}
+
+function makeIcon(category, label) {
   const s = CATEGORY_STYLE[category];
+  const glyph = label != null ? `<span style="transform:rotate(45deg);font-size:15px;font-weight:700;color:white;">${label}</span>`
+                              : `<span style="transform:rotate(45deg);font-size:14px;">${s.emoji}</span>`;
   return L.divIcon({
     className: 'custom-pin',
-    html: `<div style="background:${s.color};width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);font-size:14px;">${s.emoji}</span></div>`,
+    html: `<div style="background:${s.color};width:32px;height:32px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;">${glyph}</div>`,
     iconSize: [32, 32],
     iconAnchor: [16, 32],
     popupAnchor: [0, -32]
@@ -54,7 +64,8 @@ function renderMarkers() {
   allMarkers = [];
   placesData.forEach(p => {
     if (currentFilter !== 'all' && p.category !== currentFilter) return;
-    const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.category) }).addTo(map);
+    const label = p.category === 'beertour' && p.stop != null ? p.stop : null;
+    const m = L.marker([p.lat, p.lng], { icon: makeIcon(p.category, label) }).addTo(map);
     const ratingLine = p.rating ? `⭐ ${p.rating} (${p.reviews?.toLocaleString() ?? '?'} reviews)` : '';
     const priceLine = p.price ? ` · ${p.price}` : '';
     m.bindPopup(`
@@ -63,7 +74,7 @@ function renderMarkers() {
         <span style="color:#666;font-size:12px;">${p.address.split(',').slice(0,2).join(',')}</span><br>
         ${ratingLine ? `<span style="font-size:12px;">${ratingLine}${priceLine}</span><br>` : ''}
         <span style="font-size:11px;color:#888;">${p.tag}</span><br>
-        <a href="${p.url}" target="_blank" style="color:#C41E3A;font-size:12px;">Open in Google Maps →</a>
+        <a href="${mapsUrl(p)}" target="_blank" style="color:#C41E3A;font-size:12px;">Open in Google Maps →</a>
       </div>
     `);
     allMarkers.push(m);
@@ -85,6 +96,8 @@ function renderCounts() {
   document.getElementById('count-all').textContent = placesData.length;
   document.getElementById('count-food').textContent = placesData.filter(p => p.category === 'food').length;
   document.getElementById('count-brewery').textContent = placesData.filter(p => p.category === 'brewery').length;
+  const beertour = document.getElementById('count-beertour');
+  if (beertour) beertour.textContent = placesData.filter(p => p.category === 'beertour').length;
 }
 
 function placeCard(p, accentColor = '#C41E3A') {
@@ -92,7 +105,7 @@ function placeCard(p, accentColor = '#C41E3A') {
   const priceBadge = p.price ? `<span class="text-xs px-2 py-0.5 rounded bg-stone-100 text-stone-700">${p.price}</span>` : '';
   const tagBadge = `<span class="text-xs px-2 py-0.5 rounded text-white" style="background:${accentColor}">${p.tag}</span>`;
   return `
-    <a href="${p.url}" target="_blank" class="block bg-white border border-stone-200 rounded-lg p-4 hover:shadow-md hover:border-stone-300 transition">
+    <a href="${mapsUrl(p)}" target="_blank" class="block bg-white border border-stone-200 rounded-lg p-4 hover:shadow-md hover:border-stone-300 transition">
       <div class="flex justify-between items-start gap-2 mb-2">
         <h3 class="font-bold text-stone-900">${p.name}</h3>
       </div>
@@ -123,17 +136,56 @@ function renderBreweryGrid() {
 
 function renderTour() {
   const stops = document.getElementById('tour-stops');
-  stops.innerHTML = tourData.stops.map((s, i) => `
-    <div class="bg-white/10 backdrop-blur rounded-lg p-5 border border-white/20">
-      <div class="flex items-center gap-2 mb-2">
-        <span class="text-3xl font-bold text-amber-300">${i+1}</span>
-        <span class="text-amber-300 text-sm font-semibold">${s.time}</span>
+  stops.innerHTML = tourData.stops.map((s, i) => {
+    const mapsQuery = encodeURIComponent(`${s.name}, ${s.address}`);
+    const roleBadge = s.role
+      ? `<span class="inline-block bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full">${s.role}</span>`
+      : '';
+    const googleLine = s.google_rating
+      ? `<span title="Google rating">⭐ ${s.google_rating} <span class="text-stone-400">(${s.google_reviews?.toLocaleString() ?? '?'})</span></span>`
+      : '';
+    const untappdLine = s.untappd_rating
+      ? `<a href="${s.untappd_url}" target="_blank" rel="noopener" class="text-amber-300 hover:underline"${s.untappd_note ? ` title="${s.untappd_note}"` : ''}>🍺 Untappd ${s.untappd_rating}</a>`
+      : '';
+    return `
+    <div class="bg-white/10 backdrop-blur rounded-lg p-5 border border-white/20 flex flex-col">
+      <div class="flex items-start gap-3 mb-2">
+        <span class="text-3xl font-bold text-amber-300 leading-none">${i+1}</span>
+        <div>
+          <h3 class="text-xl font-bold leading-tight">${s.name} ${s.emoji ?? ''}</h3>
+          ${roleBadge}
+        </div>
       </div>
-      <h3 class="text-xl font-bold mb-1">${s.name}</h3>
-      <p class="text-stone-300 text-sm">${s.reason}</p>
-      <a href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}" target="_blank" class="text-amber-300 text-xs mt-3 inline-block hover:underline">Open in Maps →</a>
+      <p class="text-stone-400 text-xs mb-3">${s.address}</p>
+      <div class="flex items-center gap-3 flex-wrap text-sm mb-3">
+        ${googleLine}
+        ${untappdLine}
+      </div>
+      <p class="text-stone-400 text-xs mb-2"><span class="font-semibold text-stone-300">Friday:</span> ${s.friday_hours}</p>
+      <p class="text-stone-300 text-sm flex-1">${s.description}</p>
+      <a href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}" target="_blank" rel="noopener" class="text-amber-300 text-xs mt-3 inline-block hover:underline">Open in Maps →</a>
     </div>
-  `).join('');
+  `;
+  }).join('');
+
+  const summary = document.getElementById('tour-summary');
+  if (summary) {
+    const bits = [];
+    if (tourData.route) bits.push(tourData.route);
+    if (tourData.pickup_time) bits.push(`Pickup ${tourData.pickup_time}`);
+    if (tourData.total_drive_time) bits.push(tourData.total_drive_time);
+    if (tourData.transport?.vehicle) {
+      const coach = tourData.transport.name ? `${tourData.transport.vehicle} (${tourData.transport.name})` : tourData.transport.vehicle;
+      bits.push(coach);
+    }
+    if (tourData.guests) bits.push(`~${tourData.guests} guests`);
+    summary.innerHTML = `
+      <div class="bg-white/5 border border-white/10 rounded-lg p-5">
+        <p class="text-xs font-bold uppercase tracking-widest text-amber-300 mb-2">Tour Route</p>
+        <p class="text-stone-200 text-sm md:text-base">${bits.join(' · ')}</p>
+        ${tourData.food_note ? `<p class="text-stone-400 text-sm mt-3">🍕 ${tourData.food_note}</p>` : ''}
+      </div>`;
+  }
 
   const details = document.getElementById('tour-details');
   if (details && tourData.transport) {

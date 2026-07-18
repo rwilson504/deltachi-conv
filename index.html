@@ -20,6 +20,7 @@
     .pin-food { background:#22c55e; }
     .pin-brewery { background:#f59e0b; }
     .pin-hotel { background:#C41E3A; }
+    .pin-beertour { background:#7c3aed; }
     .leaflet-popup-content { font-size:14px; line-height:1.4; }
     .leaflet-popup-content strong { color: var(--dx-red); }
     .filter-btn { transition: all 0.15s ease; }
@@ -199,11 +200,12 @@
     <div class="max-w-6xl mx-auto px-4">
       <p class="text-amber-300 font-semibold tracking-widest text-sm">FRIDAY · JULY 24, 2026</p>
       <h2 class="text-3xl md:text-4xl font-bold mt-2 mb-2">Brew Tour</h2>
-      <div class="flex items-center gap-3 flex-wrap mb-8">
-        <p class="text-stone-300">3 stops · 4-5 hours · $55/person · 22-person mini coach</p>
-        <span class="inline-block bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full">Stops Tentative</span>
+      <div class="flex items-center gap-3 flex-wrap mb-6">
+        <p class="text-stone-300">3 stops · $55/person · 22-passenger coach</p>
+        <span class="inline-block bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 text-xs font-semibold uppercase tracking-widest px-2.5 py-1 rounded-full">Route Finalized</span>
       </div>
 
+      <div id="tour-summary" class="mb-8"></div>
       <div id="tour-details" class="mb-6"></div>
       <div id="tour-stops" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
     </div>
@@ -221,6 +223,7 @@
         <button class="filter-btn px-4 py-2 rounded-full text-sm bg-stone-200 text-stone-700" data-filter="hotel">🏨 Hotel</button>
         <button class="filter-btn px-4 py-2 rounded-full text-sm bg-stone-200 text-stone-700" data-filter="food">🍴 Food (<span id="count-food">0</span>)</button>
         <button class="filter-btn px-4 py-2 rounded-full text-sm bg-stone-200 text-stone-700" data-filter="brewery">🍺 Breweries (<span id="count-brewery">0</span>)</button>
+        <button class="filter-btn px-4 py-2 rounded-full text-sm bg-stone-200 text-stone-700" data-filter="beertour">🚌 Beer Tour (<span id="count-beertour">0</span>)</button>
       </div>
     </div>
     <div id="map"></div>

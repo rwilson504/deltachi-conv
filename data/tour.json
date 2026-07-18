@@ -2,27 +2,44 @@
   "name": "Friday Brew Tour",
   "date": "2026-07-24",
   "duration_hours": "4-5",
+  "route": "Hyatt Regency → Daredevil → Guggman Haus → MashCraft On Delaware → Hyatt",
+  "pickup_time": "~11:45 AM",
+  "total_drive_time": "~35 min total driving",
+  "guests": 18,
+  "food_note": "Food is available at every stop — lunch kicks off at Daredevil (pizza) and both Guggman Haus and MashCraft have full kitchens.",
   "stops": [
     {
-      "time": "1:00 PM",
-      "name": "Sun King Brewery",
-      "reason": "Indy's flagship craft brewery, big group-friendly taproom",
-      "lat": 39.776722,
-      "lng": -86.151861
+      "name": "Daredevil Brewing Co.",
+      "role": "Start / Lunch",
+      "address": "1151 N Main St, Indianapolis, IN 46224 (Speedway)",
+      "google_rating": 4.5,
+      "google_reviews": 498,
+      "untappd_rating": 3.81,
+      "untappd_url": "https://untappd.com/DaredevilBrewing",
+      "friday_hours": "12:00 PM – 10:00 PM",
+      "description": "German-style lager program plus tavern-style pizza — our lunch kickoff, farthest stop, out toward the Speedway."
     },
     {
-      "time": "2:30 PM",
       "name": "Guggman Haus Brewing Co.",
-      "reason": "Family-run neighborhood brewery, killer patio, lighter beers for mid-tour",
-      "lat": 39.788289,
-      "lng": -86.181361
+      "address": "1701 Gent Ave, Indianapolis, IN 46202",
+      "google_rating": 4.8,
+      "google_reviews": 713,
+      "untappd_rating": 4.08,
+      "untappd_url": "https://untappd.com/GuggmanHausBrewingCompany",
+      "friday_hours": "11:00 AM – 10:00 PM",
+      "description": "Family-run neighborhood brewery with a killer patio and a full kitchen. Highest-rated beer of the tour (Untappd 4.08)."
     },
     {
-      "time": "4:00 PM",
-      "name": "The Hangar",
-      "reason": "Highest-rated brewery in Indy (4.9\u2605/4,870 reviews) \u2014 perfect closer",
-      "lat": 39.76,
-      "lng": -86.158889
+      "name": "MashCraft On Delaware",
+      "role": "Final Stop",
+      "address": "2205 N Delaware St #104, Indianapolis, IN 46205",
+      "google_rating": 4.8,
+      "google_reviews": 192,
+      "untappd_rating": 3.76,
+      "untappd_url": "https://untappd.com/MashCraftBrewing",
+      "untappd_note": "brewery-wide rating; On Delaware is one of their 3 taprooms",
+      "friday_hours": "12:00 PM – 10:00 PM",
+      "description": "Downtown brewpub, award-winning mashups, food available. Our final stop before heading back to the hotel."
     }
   ],
   "payment_url": "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=BBKRDRMPBF3RJ",
