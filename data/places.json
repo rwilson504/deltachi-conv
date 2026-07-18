@@ -445,19 +445,6 @@
     "url": "https://www.google.com/maps/search/?api=1&query=39.765406,-86.1590935"
   },
   {
-    "id": "blind-owl-brewery",
-    "name": "Blind Owl Brewery",
-    "category": "brewery",
-    "address": "5014 E 62nd St, Indianapolis, IN 46220, USA",
-    "lat": 39.870075199999995,
-    "lng": -86.0846814,
-    "rating": 4.3,
-    "reviews": 2245,
-    "price": null,
-    "tag": "Brewery",
-    "url": "https://www.google.com/maps/search/?api=1&query=39.870075199999995,-86.0846814"
-  },
-  {
     "id": "centerpoint-brewing-company",
     "name": "Centerpoint Brewing Company",
     "category": "brewery",

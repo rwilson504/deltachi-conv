@@ -79,6 +79,14 @@ function renderMarkers() {
     `);
     allMarkers.push(m);
   });
+
+  // Fit the view to the visible pins so far-out stops (e.g. the beer tour) stay on screen.
+  if (allMarkers.length > 1) {
+    const group = L.featureGroup(allMarkers);
+    map.fitBounds(group.getBounds().pad(0.15));
+  } else if (allMarkers.length === 1) {
+    map.setView(allMarkers[0].getLatLng(), 14);
+  }
 }
 
 function bindFilters() {
