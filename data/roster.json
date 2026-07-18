@@ -1,6 +1,6 @@
 {
   "_comment": "Auto-managed by the Sheet ? GitHub Apps Script bridge. Do not hand-edit.",
-  "updated_at": "2026-06-08T08:18:17.691Z",
+  "updated_at": "2026-07-18T20:48:54.489Z",
   "submit_form_url": "https://forms.gle/4sJ6rPA4j2uRpPBC9",
   "attendees": [
     {
@@ -56,7 +56,7 @@
       "Chapter": "Kent State ?04",
       "Arrival": "Wednesday",
       "Departure": "Sunday",
-      "Needs Roommate": "Yes, I need a roommate assigned",
+      "Needs Roommate": "I already have a confirmed roommate",
       "Notes": ""
     },
     {
@@ -64,7 +64,7 @@
       "Chapter": "Kent ",
       "Arrival": "Wednesday",
       "Departure": "Sunday",
-      "Needs Roommate": "Yes, I need a roommate assigned",
+      "Needs Roommate": "I already have a confirmed roommate",
       "Notes": ""
     },
     {
